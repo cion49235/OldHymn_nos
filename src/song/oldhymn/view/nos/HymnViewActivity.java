@@ -87,8 +87,8 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB, "ca-app-pub-4637651494513698/8753921760");
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB_FULL, "ca-app-pub-4637651494513698/1230654962");
 		context = this;
-//		addBannerView();
-		init_admob_naive();
+		addBannerView();
+//		init_admob_naive();
 		init_ui();
 		telephony_manager();
 		get_data();
@@ -108,19 +108,19 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
 	@Override
 	protected void onPause() {
 		super.onPause();
-		admobNative.pause();
+//		admobNative.pause();
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		admobNative.resume();
+//		admobNative.resume();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		admobNative.destroy();
+//		admobNative.destroy();
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		action_background = false;
 		if(downloadImageAsync != null){
