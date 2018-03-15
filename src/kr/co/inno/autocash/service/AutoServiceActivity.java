@@ -43,6 +43,7 @@ import cz.msebera.android.httpclient.client.ClientProtocolException;
 import kr.co.inno.autocash.Autoapp_DBopenHelper;
 import kr.co.inno.autocash.RestartReceiver;
 import kr.co.inno.autocash.cms.AppData;
+import song.oldhymn.view.nos.dao.Const;
 import song.oldhymn.view.nos.util.PreferenceUtil;
 
 @SuppressLint({"InflateParams"})
@@ -106,9 +107,11 @@ public class AutoServiceActivity extends Service
         Log.i("dsu", "auto_count : " + auto_count + "\nad_view : " + PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false));
         if(auto_count == Integer.parseInt(PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_AD_TIME, "100"))){
             auto_count = 1;
-            if(PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false) == true) {
-            	adstatus_async = new Adstatus_Async();
-                adstatus_async.execute();	 
+            if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
+            	if(PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false) == true) {
+                	adstatus_async = new Adstatus_Async();
+                    adstatus_async.execute();	 
+                }	
             }
         }
         callingCount++;

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="song.oldhymn.view.nos"
-    android:versionCode="4"
-    android:versionName="1.0.4" >
+    android:versionCode="6"
+    android:versionName="1.0.6" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -18,13 +18,18 @@
             android:screenOrientation="sensorPortrait"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="stateHidden"
-            android:name="song.oldhymn.view.nos.MainFragmentActivity"
+            android:name="song.oldhymn.view.nos.activity.IntroActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:screenOrientation="sensorPortrait"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:name="song.oldhymn.view.nos.MainFragmentActivity"/>
         
         <activity
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -70,4 +75,5 @@
  	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.GET_TASKS"/>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+	<uses-permission android:name="com.android.vending.BILLING" />
 </manifest>
