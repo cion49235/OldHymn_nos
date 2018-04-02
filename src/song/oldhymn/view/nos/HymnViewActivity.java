@@ -88,9 +88,9 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB, "ca-app-pub-4637651494513698/8753921760");
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB_FULL, "ca-app-pub-4637651494513698/1230654962");
 		context = this;
-		if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
+		/*if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
 			addBannerView();	
-		}
+		}*/
 //		init_admob_naive();
 		init_ui();
 		telephony_manager();
@@ -350,9 +350,9 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
 			}
 			if(PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_HYMN_CONTINUE, hymn_continue) == true){
 				action_background = false;
-				if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
+				/*if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
 					addInterstitialView();	
-				}
+				}*/
 				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {

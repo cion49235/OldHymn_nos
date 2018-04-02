@@ -97,7 +97,7 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
         CustomPopup.startCustomPopup(this, "d4hsqvh5");
 //		init_admob_naive();
         if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
-        	addBannerView();
+//        	addBannerView();
         	auto_service();
         }else {
         	auto_service_stop();
