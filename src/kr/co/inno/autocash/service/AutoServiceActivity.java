@@ -26,15 +26,19 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -44,6 +48,7 @@ import cz.msebera.android.httpclient.client.ClientProtocolException;
 import kr.co.inno.autocash.Autoapp_DBopenHelper;
 import kr.co.inno.autocash.RestartReceiver;
 import kr.co.inno.autocash.cms.AppData;
+import song.oldhymn.view.nos.activity.IntroActivity;
 import song.oldhymn.view.nos.dao.Const;
 import song.oldhymn.view.nos.util.PreferenceUtil;
 
@@ -108,7 +113,7 @@ public class AutoServiceActivity extends Service
         currentHour = sdfNow.format(date);
         auto_count++;
         Log.i("dsu", "auto_count : " + auto_count + "\nad_view : " + PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false));
-        if(auto_count == Integer.parseInt(PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_AD_TIME, "100"))){
+        if(auto_count == Integer.parseInt(PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_AD_TIME, "250"))){
             auto_count = 1;
             if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
             	if(PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_AD_VIEW, false) == true) {
@@ -164,6 +169,7 @@ public class AutoServiceActivity extends Service
         int ad_id;
         String ad_status;
         String ad_time;
+        Handler handler = new Handler();
         public Adstatus_Async(){
         }
         @Override
@@ -236,7 +242,32 @@ public class AutoServiceActivity extends Service
             try{
                 if(ad_status != null){
                     if(ad_status.equals("Y")){
-                        addInterstitialView();
+                    	String packageName = "";
+                        try {
+                            @SuppressWarnings("unused")
+							PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            packageName = getPackageName();
+                            PackageManager pm = getPackageManager();
+                            intent = pm.getLaunchIntentForPackage(packageName);
+                            intent.putExtra("backgournd_type", 1);
+                            startActivity(intent);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                	addInterstitialView();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(IntroActivity.activity != null){
+                                                IntroActivity.activity.finish();
+                                            }
+                                        }
+                                    },0);
+                                }
+                            },100);
+                        } catch (PackageManager.NameNotFoundException e) {
+                        } catch (ActivityNotFoundException e) {
+                        }
                     }
                 }
             }catch(NullPointerException e){

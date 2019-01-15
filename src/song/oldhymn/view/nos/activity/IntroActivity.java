@@ -15,11 +15,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import song.oldhymn.view.nos.MainFragmentActivity;
 import song.oldhymn.view.nos.R;
@@ -33,12 +35,22 @@ public class IntroActivity extends Activity{
 	public Handler handler;
 	public Context context;
 	public boolean retry_alert = false;
+	public static Activity activity;
+	public static LinearLayout bg_intro;
+    public static int background_type = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_intro);
         context = this;
+        activity = this;
+        bg_intro = (LinearLayout)findViewById(R.id.bg_intro);
+        if(getIntent().getIntExtra("backgournd_type", background_type) == 0){
+            bg_intro.setBackgroundResource(R.drawable.bg_intro_background);
+        }else{
+            bg_intro.setBackgroundColor(Color.TRANSPARENT);
+        }	
         retry_alert = true;
         billing_process();//인앱정기결제체크
         

@@ -401,8 +401,8 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
 		hymn_control_panel_layout.setVisibility(View.VISIBLE);
 		if(description == 1){
 			try{
-				String hymnsong_old = SimpleCrypto.decrypt(Utils.get_data, context.getString(R.string.txt_hymnsong_url_old));
-				String hymnlyrics_old = SimpleCrypto.decrypt(Utils.get_data, context.getString(R.string.txt_hymnlyrics_url_old));
+				String hymnsong_old = context.getString(R.string.url_detail_hymnsong_old);
+				String hymnlyrics_old = context.getString(R.string.url_detail_hymnlyrics_old);
 				hymn_control_panel_layout.setVisibility(View.VISIBLE);
 				downloadImageAsync = new DownloadImageAsync(img_hymn, hymnlyrics_old + Integer.toString(id) + ".gif");
 				downloadImageAsync.execute();
@@ -412,8 +412,8 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
 			}
 			}else if(description == 2){
 				try{
-					String hymnsong_new = SimpleCrypto.decrypt(Utils.get_data, context.getString(R.string.txt_hymnsong_url_new));
-					String hymnlyrics_new = SimpleCrypto.decrypt(Utils.get_data, context.getString(R.string.txt_hymnlyrics_url_new));
+					String hymnsong_new = context.getString(R.string.url_detail_hymnsong_new);
+					String hymnlyrics_new = context.getString(R.string.url_detail_hymnlyrics_new);
 					hymn_control_panel_layout.setVisibility(View.VISIBLE);
 					downloadImageAsync = new DownloadImageAsync(img_hymn, hymnlyrics_new + Integer.toString(id) + ".JPG");
 					downloadImageAsync.execute();

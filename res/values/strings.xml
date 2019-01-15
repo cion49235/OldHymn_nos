@@ -25,4 +25,11 @@
     <string name="txt_inapp_alert_title">"광고제거"</string>
     <string name="txt_inapp_alert_yes">"광고제거"</string>
     <string name="txt_inapp_alert_no">"무시하기"</string>
+    
+    <string name="url_detail_hymnsong_old">"http://streampod.jnetwork.kr/hymn/old/song/"</string>
+    <string name="url_detail_hymnlyrics_old">"http://streampod.jnetwork.kr/hymn/old/lyrics/"</string>
+    
+    <string name="url_detail_hymnsong_new">"http://streampod.jnetwork.kr/hymn/new/song/"</string>
+    <string name="url_detail_hymnlyrics_new">"http://streampod.jnetwork.kr/hymn/new/lyrics/"</string>
+    
 </resources>
