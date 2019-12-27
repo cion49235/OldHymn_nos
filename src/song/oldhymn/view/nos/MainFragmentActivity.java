@@ -1,5 +1,8 @@
 package song.oldhymn.view.nos;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -13,9 +16,8 @@ import com.admixer.CustomPopupListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,16 +27,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import kr.co.inno.autocash.service.AutoServiceActivity;
 import song.oldhymn.view.nos.dao.Const;
 import song.oldhymn.view.nos.fragment.FragmentActivity1;
 import song.oldhymn.view.nos.fragment.FragmentActivity2;
 import song.oldhymn.view.nos.util.PreferenceUtil;
+import song.oldhymn.view.nos.widget.DialogMainPopup;
 
+@SuppressLint("SimpleDateFormat")
 public class MainFragmentActivity extends SherlockFragmentActivity implements CustomPopupListener, AdViewListener{
 	private ActionBar actionbar;
 	private ViewPager viewpager;
@@ -48,7 +52,9 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
 		super.onCreate(savedInstanceState);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		setContentView(R.layout.fragment_main);
+		alert_view = true;
 		context = this;
+		today_date();
 		AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMIXER, "d4hsqvh5");
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB, "ca-app-pub-4637651494513698/8753921760");
     	AdMixerManager.getInstance().setAdapterDefaultAppCode(AdAdapter.ADAPTER_ADMOB_FULL, "ca-app-pub-4637651494513698/1230654962");
@@ -98,23 +104,44 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
 //		init_admob_naive();
         if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
         	addBannerView();
-        	auto_service();
-        }else {
-        	auto_service_stop();
+        }
+//        Log.i("dsu", "GET_PREF_RECOMMEND_STATUS : " + PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_RECOMMEND_STATUS, "N"));
+        if(PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_RECOMMEND_STATUS, "N").equals("Y")){
+            main_popup();
         }
 		exit_handler();
 	}
 	
-	private void auto_service() {
-        Intent intent = new Intent(context, AutoServiceActivity.class);
-        context.stopService(intent);
-        context.startService(intent);
+	private void today_date(){
+        Date today = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        String date_today =  date.format(today);
+//        Log.i("dsu","저장된날짜 ======================>: "+ PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_DATE_TODAY, date_today));
+//        Log.i("dsu","오늘날짜 ======================>: "+ date_today);
+        if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_DATE_TODAY, date_today).equals(date_today)){
+            PreferenceUtil.setBooleanSharedData(context, PreferenceUtil.PREF_RECOMMEND_POPUP, false);
+        }
+        PreferenceUtil.setStringSharedData(context, PreferenceUtil.PREF_DATE_TODAY, date_today);
+//        Log.i("dsu","그리고 오늘날짜저장 ======================>: "+ date_today);
+    }
+
+	
+	private void main_popup(){
+		Log.i("dsu", "PREF_RECOMMEND_POPUP : " + (PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_RECOMMEND_POPUP, false)));
+        if(PreferenceUtil.getBooleanSharedData(context, PreferenceUtil.PREF_RECOMMEND_POPUP, false) == false){
+            dialog_recommend_popup();
+        }
     }
 	
-	private void auto_service_stop() {
-        Intent intent = new Intent(context, AutoServiceActivity.class);
-        context.stopService(intent);
-    }
+	
+	private boolean alert_view = false;
+	 private void dialog_recommend_popup(){
+	        DialogMainPopup dialogClose =  new DialogMainPopup(context, MainFragmentActivity.this);
+	        dialogClose.setCanceledOnTouchOutside(false);
+	        dialogClose.setCancelable(true);
+	        if(alert_view) dialogClose.show();
+	 }
+	
 	
 	public static RelativeLayout ad_layout;
 	public void addBannerView() {
@@ -145,6 +172,7 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		alert_view = false;
 		CustomPopup.stopCustomPopup();
 //		admobNative.destroy();
 	}
