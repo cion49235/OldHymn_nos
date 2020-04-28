@@ -99,8 +99,8 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
 
 		tab = actionbar.newTab().setText(context.getString(R.string.tab_menu_2)).setTabListener(tabListener);
 		actionbar.addTab(tab);
-		CustomPopup.setCustomPopupListener(this);
-        CustomPopup.startCustomPopup(this, "d4hsqvh5");
+//		CustomPopup.setCustomPopupListener(this);
+//        CustomPopup.startCustomPopup(this, "d4hsqvh5");
 //		init_admob_naive();
         if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
         	addBannerView();
@@ -173,7 +173,7 @@ public class MainFragmentActivity extends SherlockFragmentActivity implements Cu
 	protected void onDestroy() {
 		super.onDestroy();
 		alert_view = false;
-		CustomPopup.stopCustomPopup();
+//		CustomPopup.stopCustomPopup();
 //		admobNative.destroy();
 	}
 	

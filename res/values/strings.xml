@@ -21,10 +21,14 @@
     <string name="txt_hymn_continue_true">"연속으로 이어서 연주됩니다"</string>
     <string name="txt_hymn_continue_false">"한곡만 연주됩니다"</string>
     
-    <string name="txt_inapp_alert_ment">"모든광고가 없는 버전을 이용하시겠어요?\n※결제시 과금청구"</string>
+    <string name="txt_inapp_alert_ment">"찬송가 앱내 모든광고가 제거됩니다!\n프로버전으로 전환하시겠어요?\n3일 무료체험 이용 후 취소가능 합니다!\n※월정액이니 신중히 선택해주세요!\n결제 완료 후 앱을 재실행 해주세요."</string>
     <string name="txt_inapp_alert_title">"광고제거"</string>
-    <string name="txt_inapp_alert_yes">"광고제거"</string>
-    <string name="txt_inapp_alert_no">"무시하기"</string>
+    <string name="txt_inapp_alert_yes">"3일무료"</string>
+    <string name="txt_inapp_alert_no">"취소하기"</string>
+    
+    <string name="txt_subscribe">"광고\n제거"</string>
+    <string name="txt_subscribe_error">"결제실패하였습니다."</string>
+    <string name="txt_subscribe_success">"감사합니다! 앱을 재실행  해주세요! 모든 광고가제거됩니다."</string>
     
     <string name="url_detail_hymnsong_old">"http://streampod.jnetwork.kr/hymn/old/song/"</string>
     <string name="url_detail_hymnlyrics_old">"http://streampod.jnetwork.kr/hymn/old/lyrics/"</string>

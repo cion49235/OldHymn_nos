@@ -2,8 +2,16 @@ package song.oldhymn.view.nos.fragment;
 
 
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.TransactionDetails;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +22,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +34,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,6 +47,7 @@ import song.oldhymn.view.nos.dao.DBOpenHelper_Fragment1;
 import song.oldhymn.view.nos.dao.Fragment_Data1;
 import song.oldhymn.view.nos.util.KoreanTextMatch;
 import song.oldhymn.view.nos.util.KoreanTextMatcher;
+import song.oldhymn.view.nos.util.PreferenceUtil;
 
 public class FragmentActivity1 extends Fragment implements OnClickListener, OnItemClickListener, OnScrollListener{
 	private EditText edit_searcher;
@@ -49,23 +60,112 @@ public class FragmentActivity1 extends Fragment implements OnClickListener, OnIt
 	private LinearLayout layout_nodata;
 	private String searchKeyword;
 	private ImageButton btn_close;
+	private Button btn_subscribe;
 	private KoreanTextMatch match1, match2;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_1,container, false);
+		billing_process();
 		init_ui(view);
+		retry_alert = true;
 		display_list();
 		seacher_start();
 		listview.setOnScrollListener(this);
 		listview.setOnItemClickListener(this);
 		btn_close.setOnClickListener(this);
+		btn_subscribe.setOnClickListener(this);
 		return view;
 		
 	}
 	
+	private BillingProcessor bp;
+	private static final String SUBSCRIPTION_ID = "song.oldhymn.inapp.month";
+    private static final String LICENSE_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoNHiFif6BUrIB33Qn2qXcrGPnZvkBZPj+qn5TJU1AV2M8INxVj0C9M19wl7RT+FA4xfR1+4qVUGwbgxsiy0+lzwxLB9ItSanXC3fwB/sE+/w5dSP6k2rOHuZspKrGdeYHtCmHhz/fBzsO7ONPgP94bHFpin2zfOvAnmG1yItj/YWATKXoQasisPQsFV1orhBuNWMVoqTXfXFl+q3zZsTj0qEoYi+wwJdU60BmsbwVY22HMW4LvRc41vO/Qw1KjdRMKImLaKMGjJLUL5j2IIcqf/RncK4bg1XQ/7x1j+cvrVUGo7ora72d9P2JSvasNtFgdT1i04eKmx3Qy/Ee65BYwIDAQAB";
+    private void billing_process(){
+        if(!BillingProcessor.isIabServiceAvailable(getActivity())) {
+        }
+        bp = new BillingProcessor(getActivity(), LICENSE_KEY, new BillingProcessor.IBillingHandler() {
+            @Override
+            public void onBillingInitialized() {
+                try{
+                    bp.loadOwnedPurchasesFromGoogle();
+                    Log.i("dsu", "isSubscriptionUpdateSupported : " + bp.isSubscriptionUpdateSupported());
+                    Log.i("dsu", "getSubscriptionTransactionDetails : " + bp.getSubscriptionTransactionDetails(SUBSCRIPTION_ID));
+                    Log.i("dsu", "isSubscribed : " + bp.isSubscribed(SUBSCRIPTION_ID));
+                    Log.i("dsu", "autoRenewing : " + bp.getSubscriptionTransactionDetails(SUBSCRIPTION_ID).purchaseInfo.purchaseData.autoRenewing);
+                    Log.i("dsu", "purchaseTime : " + bp.getSubscriptionTransactionDetails(SUBSCRIPTION_ID).purchaseInfo.purchaseData.purchaseTime);
+                    Log.i("dsu", "purchaseState : " + bp.getSubscriptionTransactionDetails(SUBSCRIPTION_ID).purchaseInfo.purchaseData.purchaseState);
+                    PreferenceUtil.setStringSharedData(getActivity(), PreferenceUtil.PREF_ISSUBSCRIBED, Boolean.toString(bp.getSubscriptionTransactionDetails(SUBSCRIPTION_ID).purchaseInfo.purchaseData.autoRenewing));
+                }catch (NullPointerException e){
+                }
+            }
+            
+            @Override
+            public void onPurchaseHistoryRestored() {
+//            	showToast("onPurchaseHistoryRestored");
+                for(String sku : bp.listOwnedProducts()){
+                    Log.i("dsu", "Owned Managed Product: " + sku);
+//                    showToast("Owned Managed Product: " + sku);
+                }
+                for(String sku : bp.listOwnedSubscriptions()){
+                    Log.i("dsu", "Owned Subscription: " + sku);
+//                    showToast("Owned Subscription : " + sku);
+                }
+            }
+
+			@Override
+			public void onProductPurchased(String arg0, TransactionDetails arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onBillingError(int arg0, Throwable arg1) {
+
+			}
+        });
+    }
+    
+    
+    public String MillToDate(long mills) {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        String date = (String) formatter.format(new Timestamp(mills));
+        return date;
+    }
+    
+    void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        Log.d("dsu", "Showing alert dialog: " + message);
+        bld.create().show();
+    }
+    
+    public boolean retry_alert = false;
+    private void show_inapp_alert() {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setCancelable(false);
+		builder.setTitle(getActivity().getString(R.string.txt_inapp_alert_title));
+		builder.setMessage(getActivity().getString(R.string.txt_inapp_alert_ment));
+		builder.setInverseBackgroundForced(true);
+		builder.setNeutralButton(getActivity().getString(R.string.txt_inapp_alert_yes), new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int whichButton){
+				bp.subscribe(getActivity(),SUBSCRIPTION_ID);
+			}
+		});
+		builder.setNegativeButton(getActivity().getString(R.string.txt_inapp_alert_no), new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int whichButton){
+             	dialog.dismiss();
+			}
+		});
+		AlertDialog myAlertDialog = builder.create();
+		if(retry_alert) myAlertDialog.show();
+    }
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		retry_alert = false;
 		edit_searcher.setText("");
 	}
 	
@@ -130,6 +230,7 @@ public class FragmentActivity1 extends Fragment implements OnClickListener, OnIt
 		edit_searcher = (EditText)view.findViewById(R.id.edit_searcher);
 		btn_close = (ImageButton)view.findViewById(R.id.btn_close);
 		listview = (ListView)view.findViewById(R.id.listview);
+		btn_subscribe = (Button)view.findViewById(R.id.btn_subscribe);
 	}
 	
 	public class FragmentAdapter extends BaseAdapter{
@@ -204,6 +305,8 @@ public class FragmentActivity1 extends Fragment implements OnClickListener, OnIt
 			}
 			InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);  
     		inputMethodManager.hideSoftInputFromWindow(edit_searcher.getWindowToken(), 0);
+		}else if(v == btn_subscribe) {
+			show_inapp_alert();
 		}
 	}
 	

@@ -589,14 +589,17 @@ public class HymnViewActivity extends Activity implements AdViewListener, OnClic
 			if(!PreferenceUtil.getStringSharedData(context, PreferenceUtil.PREF_ISSUBSCRIBED, Const.isSubscribed).equals("true")){
 				Toast.makeText(context, context.getString(R.string.txt_after_ad), Toast.LENGTH_LONG).show();
 				addInterstitialView();
-			}			
-			 handler.postDelayed(new Runnable() {
-				 @Override
-				 public void run() {
-					 mediaplayer_stop();
-					 onDestroy();
-				 }
-			 },2000);
+				handler.postDelayed(new Runnable() {
+					 @Override
+					 public void run() {
+						 mediaplayer_stop();
+						 onDestroy();
+					 }
+				 },2000);
+			}else {			
+				 mediaplayer_stop();
+				 onDestroy();
+			}
 			return false;
 		}
 		return super.onKeyDown(keyCode, event);
